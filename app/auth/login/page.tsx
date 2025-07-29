@@ -1,7 +1,13 @@
+import { LoginForm } from '@/app/features/auth/components/login-form'
+
 interface PageProps {
 	className?: string
 }
 
 export default function LofinPage() {
-	return <div></div>
+	return (
+		<div>
+			<LoginForm />
+		</div>
+	)
 }
