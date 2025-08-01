@@ -5,6 +5,7 @@ import { useTheme } from 'next-themes'
 import { FC, useState } from 'react'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
 import {
 	Button,
@@ -17,6 +18,7 @@ import {
 	Input
 } from '@/app/shared/components/ui'
 
+import { useRegisterMutation } from '../hooks/use-register-mutation'
 import { RegisterSchema, TypeRegisterSchema } from '../schemes/register.schema'
 
 import { AuthWrapper } from './auth-wrapper'
@@ -38,8 +40,13 @@ export const RegisterForm: FC<RegisterFormProps> = () => {
 			passwordRepeat: ''
 		}
 	})
+	const { register, isLoadingRegister } = useRegisterMutation()
 	const onSubmit = (values: TypeRegisterSchema) => {
-		console.log(values)
+		if (recaptchaValue) {
+			register({ values, recaptcha: recaptchaValue })
+		} else {
+			toast.error('Пожалуйста, завершите reCAPTCHA')
+		}
 	}
 	return (
 		<AuthWrapper
@@ -64,6 +71,7 @@ export const RegisterForm: FC<RegisterFormProps> = () => {
 									<Input
 										placeholder='Максим'
 										type='text'
+										disabled={isLoadingRegister}
 										{...field}
 									/>
 								</FormControl>
@@ -81,6 +89,7 @@ export const RegisterForm: FC<RegisterFormProps> = () => {
 									<Input
 										placeholder='maxim@example.ru'
 										type='email'
+										disabled={isLoadingRegister}
 										{...field}
 									/>
 								</FormControl>
@@ -98,6 +107,7 @@ export const RegisterForm: FC<RegisterFormProps> = () => {
 									<Input
 										placeholder='******'
 										type='password'
+										disabled={isLoadingRegister}
 										{...field}
 									/>
 								</FormControl>
@@ -115,6 +125,7 @@ export const RegisterForm: FC<RegisterFormProps> = () => {
 									<Input
 										placeholder='******'
 										type='password'
+										disabled={isLoadingRegister}
 										{...field}
 									/>
 								</FormControl>
@@ -131,7 +142,9 @@ export const RegisterForm: FC<RegisterFormProps> = () => {
 							theme={theme === 'light' ? 'light' : 'dark'}
 						/>
 					</div>
-					<Button type='submit'>Создать аккаунт</Button>
+					<Button disabled={isLoadingRegister} type='submit'>
+						Создать аккаунт
+					</Button>
 				</form>
 			</Form>
 		</AuthWrapper>
